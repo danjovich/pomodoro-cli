@@ -100,5 +100,4 @@ class Pomodoro:
             os.system("pause")
         else:
             os.system("/bin/bash -c 'read -s -n 1 -p \"Press any key to continue...\"'")
-        clearNLines(1)
         # self.pause = False
