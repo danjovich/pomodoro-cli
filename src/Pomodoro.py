@@ -94,6 +94,7 @@ class Pomodoro:
                 #         self.pause = True
                 if event.key == keyboard.KeyCode.from_char('q'): # type: ignore
                     self.quit = True
+                    return
     
     def waitForKeyPress(self):
         if platform.system() == "Windows":
