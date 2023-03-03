@@ -2,10 +2,10 @@ from time import sleep
 from clearNLines import clearNLines
 from typing import Literal
 import subprocess
-from pynput import keyboard
 from threading import Thread
 import os
 import platform
+from readchar import readchar # type: ignore
 
 
 class Pomodoro:
@@ -13,7 +13,7 @@ class Pomodoro:
     currentState: Literal['concentration',
                           'short-rest', 'long-rest'] = 'concentration'
     quit = False
-    # pause = False
+    pause = False
 
     def __init__(self, concentrationTimeLength: int = 25, shortIntervalLength: int = 5, longIntervalLength: int = 15):
         self.concentrationTimeLength = concentrationTimeLength
@@ -37,12 +37,14 @@ class Pomodoro:
 
             remainingSeconds = totalMinutes * 60
 
-            print(f'{self.currentState.capitalize()} timer started!')
+            print(f'\r{self.currentState.capitalize()} timer started!')
             print('Time remaining:')
 
             while remainingSeconds >= 0:
-                # while self.pause:
-                #     self.waitForKeyPress()
+                while self.pause:
+                    self.waitForKeyPress()
+                    self.pause = False
+                    clearNLines(1)
                 if self.quit:
                     clearNLines(2)
                     return
@@ -86,19 +88,19 @@ class Pomodoro:
                         'tomato', 'Pomodoro CLI', message])
 
     def captureInput(self):
-        with keyboard.Events() as events:
-            while True:
-                event = events.get(1e6)
-                # if event.key == keyboard.KeyCode.from_char('p'):  # type: ignore
-                #     if not self.pause:
-                #         self.pause = True
-                if event.key == keyboard.KeyCode.from_char('q'): # type: ignore
-                    self.quit = True
-                    return
-    
+        while True:
+            char = repr(readchar())
+
+            if char == "'q'":
+                self.quit = True
+                return
+            
+            if char == "'p'":
+                self.pause = True
+
     def waitForKeyPress(self):
         if platform.system() == "Windows":
             os.system("pause")
         else:
-            os.system("/bin/bash -c 'read -s -n 1 -p \"Press any key to continue...\"'")
-        # self.pause = False
+            os.system(
+                "/bin/bash -c 'read -s -n 1 -p \"Press any key to continue...\"'")
