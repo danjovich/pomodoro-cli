@@ -1,4 +1,5 @@
 git clone https://github.com/danjovich/pomodoro-cli
+pip install pynput
 if [ $? -ne 0 ]; then
   exit 1
 fi
