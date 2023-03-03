@@ -13,7 +13,7 @@ parser.add_argument('-u', '--update', action='store_true', help='update the app'
 args = parser.parse_args()
 
 if args.update:
-    print('Updating Happiness Tracker!')
+    print('Updating the Pomodoro CLI!')
     dirName = path.realpath(path.dirname(__file__))
     subprocess.call(['bash', f'{dirName}/../scripts/update.sh'])
     exit()
