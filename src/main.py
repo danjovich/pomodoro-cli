@@ -1,6 +1,4 @@
 from Pomodoro import Pomodoro
-from read_single_keypress import read_single_keypress
-from clearNLines import clearNLines
 from argparse import ArgumentParser
 from os import path
 import subprocess
@@ -20,11 +18,8 @@ if args.update:
 
 print('Pomodoro CLI 🍅')
 
-print('Press any key to start...')
-read_single_keypress()
-clearNLines(1)
-
 pomodoro = Pomodoro()
+pomodoro.waitForKeyPress()
 pomodoro.startCycle()
 
 print('Program ended')
