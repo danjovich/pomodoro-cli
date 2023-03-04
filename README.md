@@ -18,11 +18,19 @@ Once installed, you can run the program by simply running the following command 
 pomodoro
 ```
 
-To make it easier to update the app to possible changes on this repository, run:
+To make it easier to update the app to possible changes on this repository, you anc simply run:
 
 ```bash
 pomodoro -u
 # or
 pomodoro --update
+```
+
+To see all the possible command line flags and arguments, run:
+
+```bash
+pomodoro -h
+# or
+pomodoro --help
 ```
 
