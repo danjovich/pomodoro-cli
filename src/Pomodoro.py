@@ -9,24 +9,28 @@ from readchar import readchar # type: ignore
 
 
 class Pomodoro:
-    cycles = 0
     currentState: Literal['concentration',
                           'short-rest', 'long-rest'] = 'concentration'
     quit = False
     pause = False
 
-    def __init__(self, concentrationTimeLength: int = 25, shortIntervalLength: int = 5, longIntervalLength: int = 15):
+    def __init__(self, concentrationTimeLength: int = 25, shortIntervalLength: int = 5, longIntervalLength: int = 15, cycles: int = 0, mode: Literal['r', 'c'] = 'c'):
         self.concentrationTimeLength = concentrationTimeLength
         self.shortIntervalLength = shortIntervalLength
         self.longIntervalLength = longIntervalLength
-        self.thread = Thread(target=self.captureInput)
-        self.thread.daemon = True
+        self.cycles = cycles
+        self.determineState(mode)
+
+    def determineState(self, mode: Literal['r', 'c']):
+        if mode == 'r':
+            self.currentState = 'short-rest' if self.cycles == 0 or self.cycles % 4 != 0 else 'long-rest'
+
 
     def startCycle(self):
-        self.thread.start()
-
         while True:
-            totalMinutes: int
+            thread = Thread(target=self.captureInput)
+            thread.start()
+
             match self.currentState:
                 case 'concentration':
                     totalMinutes = self.concentrationTimeLength
@@ -57,7 +61,7 @@ class Pomodoro:
             if self.currentState.endswith('rest'):
                 self.cycles += 1
 
-            cyclesUntilLongRest = f'({4 - (self.cycles % 4)} cycles until long rest)'
+            cyclesUntilLongRest = f'({(4 - (self.cycles % 4)) if (self.cycles % 4) != 0 else 0} cycles until long rest)'
             self.notify(
                 f'{self.currentState.capitalize()} timer ended {cyclesUntilLongRest}')
 
@@ -65,6 +69,11 @@ class Pomodoro:
                 self.currentState = 'concentration'
             else:
                 self.currentState = 'short-rest' if self.cycles == 0 or self.cycles % 4 != 0 else 'long-rest'
+
+            print('Press enter to continue...', end='\r')
+
+            while thread.is_alive():
+                continue
 
             ans = input(
                 f'The timer is over! Go to a {self.currentState} timer {cyclesUntilLongRest} [y|n]? ')
@@ -91,10 +100,13 @@ class Pomodoro:
         while True:
             char = repr(readchar())
 
+            if char == "'\\n'":
+                return
+
             if char == "'q'":
                 self.quit = True
                 return
-            
+
             if char == "'p'":
                 self.pause = True
 
