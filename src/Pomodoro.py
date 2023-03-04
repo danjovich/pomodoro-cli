@@ -73,6 +73,7 @@ class Pomodoro:
             print('Press enter to continue...', end='\r')
 
             while thread.is_alive():
+                sleep(0.1) # avoids excessive CPU usage
                 continue
 
             ans = input(
