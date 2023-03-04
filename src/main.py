@@ -4,7 +4,7 @@ from os import path
 import subprocess
 
 parser = ArgumentParser(
-    prog='Pomodoro CLI',
+    prog='pomodoro',
     description='A simple CLI thats serves as a minimal interface for the pomodoro concentration technique'
 )
 parser.add_argument('-u', '--update', action='store_true',
