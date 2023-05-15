@@ -13,6 +13,7 @@ class Pomodoro:
                           'short-rest', 'long-rest'] = 'concentration'
     quit = False
     pause = False
+    error: Exception | KeyboardInterrupt | None = None
 
     def __init__(self, concentrationTimeLength: int = 25, shortIntervalLength: int = 5, longIntervalLength: int = 15, cycles: int = 0, mode: Literal['r', 'c'] = 'c'):
         self.concentrationTimeLength = concentrationTimeLength
@@ -49,14 +50,17 @@ class Pomodoro:
                     self.waitForKeyPress()
                     self.pause = False
                     clearNLines(1)
+                    # print(LINE_CLEAR, end='')
                 if self.quit:
-                    clearNLines(2)
+                    clearNLines(3)
                     return
+                if self.error:
+                    raise self.error
                 self.printMinutesAndSeconds(remainingSeconds)
                 sleep(1)
                 remainingSeconds -= 1
                 if remainingSeconds >= 0:
-                    clearNLines(1)
+                    clearNLines(2)
 
             if self.currentState.endswith('rest'):
                 self.cycles += 1
@@ -82,7 +86,7 @@ class Pomodoro:
             if ans.lower() != 'y' and ans.lower() != 'yes':
                 break
 
-            clearNLines(4)
+            clearNLines(5)
 
     def printMinutesAndSeconds(self, seconds: int):
         minutes = seconds // 60
@@ -101,15 +105,16 @@ class Pomodoro:
         while True:
             char = repr(readchar())
 
-            if char == "'\\n'":
-                return
-
             if char == "'q'":
                 self.quit = True
                 return
 
             if char == "'p'":
                 self.pause = True
+
+            if char == "'\\x03'":
+                self.error = KeyboardInterrupt()
+                return
 
     def waitForKeyPress(self):
         if platform.system() == "Windows":
