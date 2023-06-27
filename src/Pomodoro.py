@@ -14,6 +14,7 @@ class Pomodoro:
     quit = False
     pause = False
     error: Exception | KeyboardInterrupt | None = None
+    threadShouldAcceptAnything = False
 
     def __init__(self, concentrationTimeLength: int = 25, shortIntervalLength: int = 5, longIntervalLength: int = 15, cycles: int = 0, mode: Literal['r', 'c'] = 'c'):
         self.concentrationTimeLength = concentrationTimeLength
@@ -50,7 +51,6 @@ class Pomodoro:
                     self.waitForKeyPress()
                     self.pause = False
                     clearNLines(1)
-                    # print(LINE_CLEAR, end='')
                 if self.quit:
                     clearNLines(3)
                     return
@@ -61,6 +61,7 @@ class Pomodoro:
                 remainingSeconds -= 1
                 if remainingSeconds >= 0:
                     clearNLines(2)
+            
 
             if self.currentState.endswith('rest'):
                 self.cycles += 1
@@ -74,8 +75,8 @@ class Pomodoro:
             else:
                 self.currentState = 'short-rest' if self.cycles == 0 or self.cycles % 4 != 0 else 'long-rest'
 
-            print('Press enter to continue...', end='\r')
-
+            self.threadShouldAcceptAnything = True
+            print('Press any key to continue...', end='\r')
             while thread.is_alive():
                 sleep(0.1) # avoids excessive CPU usage
                 continue
@@ -88,7 +89,7 @@ class Pomodoro:
 
             clearNLines(5)
 
-    def printMinutesAndSeconds(self, seconds: int):
+    def printMinutesAndSeconds(self, seconds: int) -> None:
         minutes = seconds // 60
         minutesStr = str(minutes) if minutes >= 10 else f'0{minutes}'
 
@@ -104,6 +105,10 @@ class Pomodoro:
     def captureInput(self):
         while True:
             char = repr(readchar())
+
+            if self.threadShouldAcceptAnything:
+                self.threadShouldAcceptAnything = False
+                return
 
             if char == "'q'":
                 self.quit = True
