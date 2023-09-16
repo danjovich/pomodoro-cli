@@ -5,7 +5,7 @@ import subprocess
 from threading import Thread
 import os
 import platform
-from readchar import readchar # type: ignore
+from readchar import readchar
 
 
 class Pomodoro:
