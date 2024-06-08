@@ -15,7 +15,7 @@ fi
 ARG='\$@'
 sudo sh -c "echo \"#!/usr/bin/sh
 $(pwd)/.venv/bin/python3 $(pwd)/src/main.py $ARG\" > /usr/local/bin/pomodoro"
-sudo sh -c "chmod +x /usr/local/bin/pomodoro"
+sudo chmod +x /usr/local/bin/pomodoro
 
 # success message
 echo "Pomodoro CLI installed! You can run it in a shell with the \"pomodoro\" command"
