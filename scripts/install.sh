@@ -6,7 +6,7 @@ cd pomodoro-cli
 python3 -m venv .venv                                                                                      
 .venv/bin/python3 -m pip install -r requirements.txt
 
-# checks for errors in the previous commands and exits if it finds anyt
+# checks for errors in the previous commands and exits if it finds any
 if [ $? -ne 0 ]; then
   exit 1
 fi
